@@ -1,4 +1,4 @@
-import userSignUpSchema  from "./Schemas/signUpSchema.js";
+import userSignUpSchema  from "../Schemas/signUpSchema.js";
 import chalk from "chalk";
 
 export async function signUpValidate(req, res, next){

@@ -1,5 +1,5 @@
-import joi from "joi";
+// import joi from "joi";
 
-export const tokenSchema = joi.object({
-    token:joi.string().required()
-})
+// export const tokenSchema = joi.object({
+//     token:joi.string().required()
+// })
