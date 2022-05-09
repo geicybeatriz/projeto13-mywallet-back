@@ -15,7 +15,7 @@ export async function getTransations(req, res){
         const user = await db.collection("users").findOne({_id: session.userId});
         if(!user) return res.sendStatus(401);
 
-        const userRegisters = await db.collection("register").find({userId: user._Id}).toArray();
+        const userRegisters = await db.collection("register").find({userAdress: user.email}).toArray();
         console.log(userRegisters);
 
         delete user.password;
@@ -37,13 +37,16 @@ export async function postTransation(req, res){
 
     try {
         const session = await db.collection("sessions").findOne({token});
+        console.log("session", session)
         if(!session) return res.sendStatus(401);
 
         const user = await db.collection("users").findOne({_id: session.userId});
+        console.log("user", user);
+
         if(!user) return res.sendStatus(401);
         
         const userRegister = await db.collection("register").insertOne({...cashRegister,
-                userId: user._Id,
+                userAdress: user.email,
                 date: dayjs().format("DD/MM")
         });
 
@@ -56,6 +59,10 @@ export async function postTransation(req, res){
 }
 
 export async function updateTransation(req, res) {
+    const { authorization } = req.headers;
+    const token = authorization?.replace('Bearer ', '');
+    if(!token) return res.sendStatus(401);
+
     const {amount, description} = req.body;
     const {id} = req.params;
     try {
@@ -71,6 +78,10 @@ export async function updateTransation(req, res) {
 }
 
 export async function deleteTransation(req, res){
+    const { authorization } = req.headers;
+    const token = authorization?.replace('Bearer ', '');
+    if(!token) return res.sendStatus(401);
+
     const {id} = req.params;
     try {
         await db.collection("register").deleteOne({_id:new ObjectId(id)});
@@ -83,10 +94,13 @@ export async function deleteTransation(req, res){
 }
 
 export async function logOut(req, res){
-    const {user} = req.locals;
+    const { authorization } = req.headers;
+    const token = authorization?.replace('Bearer ', '');
+    if(!token) return res.sendStatus(401);
+
+    const sessions = await db.collection("sessions").findOne({token});
+    const user = await db.collection("users").findOne({_id: sessions.userId});
+
     await db.collection("sessions").updateOne({_id: new ObjectId(user._Id)}, {$set:{token:""}});
     res.status(200).send("vc saiu da sessão");
 }
-
-
-
