@@ -1,6 +1,7 @@
 import db from "./../database.js";
 import dayjs from "dayjs";
 import { ObjectId } from "mongodb";
+import transitionSchema from "../middlewares/Schemas/transitionSchema.js";
 
 export async function getTransations(req, res){
     const { authorization } = req.headers;
@@ -13,9 +14,12 @@ export async function getTransations(req, res){
 
         const user = await db.collection("users").findOne({_id: session.userId});
         if(!user) return res.sendStatus(401);
-        const userRegisters = await db.collection("register").find({userId: user._id}).toArray();
+
+        const userRegisters = await db.collection("register").find({userId: user._Id}).toArray();
+        console.log(userRegisters);
+
         delete user.password;
-        res.status(200).send(userRegisters);
+        res.status(200).send([userRegisters, user]);
     } catch (error) {
         console.log(error);
         res.sendStatus(500);
@@ -23,14 +27,27 @@ export async function getTransations(req, res){
 }
 
 export async function postTransation(req, res){
-    const {user} = req.locals;
+    const { authorization } = req.headers;
+    const token = authorization?.replace('Bearer ', '');
+    if(!token) return res.sendStatus(401);
+
     const cashRegister = req.body;
+    const validation = transitionSchema.validate(cashRegister, {abortEarly:false});
+    if(validation.error) return res.sendStatus(422);
+
     try {
-        await db.collection("register").insertOne({...cashRegister,
+        const session = await db.collection("sessions").findOne({token});
+        if(!session) return res.sendStatus(401);
+
+        const user = await db.collection("users").findOne({_id: session.userId});
+        if(!user) return res.sendStatus(401);
+        
+        const userRegister = await db.collection("register").insertOne({...cashRegister,
                 userId: user._Id,
                 date: dayjs().format("DD/MM")
         });
-        res.status(201).send("Transação registrada!");
+
+        res.status(201).send(userRegister);
     } catch (e) {
         console.log("erro", e);
         res.sendStatus(500);
