@@ -1,5 +1,6 @@
 import transactionServices from "../services/transactionServices.js";
 import authRepository from "../repositories/authRepository.js";
+import authServices from "../services/authServices.js";
 
 export async function getTransations(req, res){
     const userId = res.locals.user._id;
@@ -29,6 +30,6 @@ export async function deleteTransation(req, res){
 
 export async function logOut(req, res){
     const userId = res.locals.user._id;
-    await authRepository.deleteSessionByUserId(userId);
+    await authServices.logOut(userId);
     res.status(200).send("você saiu da sessão");
 }

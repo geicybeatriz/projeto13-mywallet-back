@@ -39,8 +39,7 @@ async function signUpService(data){
 }
 
 async function logOut(userId){
-  //deletar sessão com aquele userId
-
+  return await authRepository.deleteSessionByUserId(userId);
 }
 
 const authServices = {
