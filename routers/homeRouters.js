@@ -8,7 +8,7 @@ const homeController = Router();
 homeController.get("/home", tokenValidationMid, getTransations);
 homeController.post("/home", tokenValidationMid, validateSchemas(transitionSchema), postTransation);
 homeController.put("/home",tokenValidationMid, logOut);
-homeController.put("/home/:id", updateTransation);
-homeController.delete("/home/:id", deleteTransation);
+homeController.put("/home/:id", tokenValidationMid, validateSchemas(transitionSchema), updateTransation);
+homeController.delete("/home/:id", tokenValidationMid, deleteTransation);
 
 export default homeController;

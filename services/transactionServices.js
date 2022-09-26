@@ -11,10 +11,29 @@ async function addTransactions(data){
   return;
 }
 
+async function verifyTransaction(id){
+  const checkTransaction = await transactionRepository.getTransactionById(id);
+  if(!checkTransaction) throw {type:"not found", message:"esta transação não existe"}
+  return checkTransaction;
+}
+
+async function updateTransaction(id, amount, description){
+  await verifyTransaction(id);
+  await transactionRepository.updateTransaction(id, amount, description);
+  return;
+}
+
+async function deleteTransaction(id){
+  await verifyTransaction(id);
+  await transactionRepository.deleteTransaction(id);
+  return;
+}
 
 const transactionServices = {
   getTransations,
-  addTransactions
+  addTransactions,
+  updateTransaction,
+  deleteTransaction
 }
 
 export default transactionServices;

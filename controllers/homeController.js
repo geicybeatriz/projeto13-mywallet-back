@@ -1,5 +1,3 @@
-import db from "./../database.js";
-import { ObjectId } from "mongodb";
 import transactionServices from "../services/transactionServices.js";
 import authRepository from "../repositories/authRepository.js";
 
@@ -16,37 +14,17 @@ export async function postTransation(req, res){
 }
 
 export async function updateTransation(req, res) {
-    const { authorization } = req.headers;
-    const token = authorization?.replace('Bearer ', '');
-    if(!token) return res.sendStatus(401);
-
     const {amount, description} = req.body;
     const {id} = req.params;
-    try {
-        await db.collection('register').updateOne({
-            _id: new ObjectId(id)}, 
-            {$set: {amount, description}
-        });
-        res.sendStatus(200);
-    } catch (error) {
-        res.status(500).send("erro ao atualizar registro.")
-    }
     
+    await transactionServices.updateTransaction(id, amount, description);
+    res.sendStatus(200);
 }
 
 export async function deleteTransation(req, res){
-    const { authorization } = req.headers;
-    const token = authorization?.replace('Bearer ', '');
-    if(!token) return res.sendStatus(401);
-
     const {id} = req.params;
-    try {
-        await db.collection("register").deleteOne({_id:new ObjectId(id)});
-        res.sendStatus(200);
-    } catch (error) {
-        console.log("erro", error);
-        res.sendStatus(500);
-    }
+    await transactionServices.deleteTransaction(id);
+    res.sendStatus(200);
 }
 
 export async function logOut(req, res){
