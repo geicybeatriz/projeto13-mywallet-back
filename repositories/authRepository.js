@@ -21,11 +21,16 @@ async function getUserById(id){
   return await db.collection("users").findOne({_id:id});
 }
 
+async function deleteSessionByUserId(userId){
+  await db.collection("sessions").deleteMany({userId:userId});
+}
+
 const authRepository = {
   getUserByEmail,
   createSession,
   insertUser,
   getSessionByToken,
-  getUserById
+  getUserById,
+  deleteSessionByUserId
 }
 export default authRepository;

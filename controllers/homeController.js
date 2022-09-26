@@ -1,6 +1,7 @@
 import db from "./../database.js";
 import { ObjectId } from "mongodb";
 import transactionServices from "../services/transactionServices.js";
+import authRepository from "../repositories/authRepository.js";
 
 export async function getTransations(req, res){
     const userId = res.locals.user._id;
@@ -46,17 +47,10 @@ export async function deleteTransation(req, res){
         console.log("erro", error);
         res.sendStatus(500);
     }
-
 }
 
 export async function logOut(req, res){
-    const { authorization } = req.headers;
-    const token = authorization?.replace('Bearer ', '');
-    if(!token) return res.sendStatus(401);
-
-    const sessions = await db.collection("sessions").findOne({token});
-    const user = await db.collection("users").findOne({_id: sessions.userId});
-
-    await db.collection("sessions").updateOne({_id: new ObjectId(user._Id)}, {$set:{token:""}});
-    res.status(200).send("vc saiu da sessão");
+    const userId = res.locals.user._id;
+    await authRepository.deleteSessionByUserId(userId);
+    res.status(200).send("você saiu da sessão");
 }

@@ -38,9 +38,15 @@ async function signUpService(data){
   await authRepository.insertUser(data.name, data.email, passwordHash);
 }
 
+async function logOut(userId){
+  //deletar sessão com aquele userId
+
+}
+
 const authServices = {
   signUpService,
-  signInService
+  signInService,
+  logOut
 }
 
 export default authServices;
