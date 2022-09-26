@@ -1,23 +1,18 @@
-// import db from "../../database.js";
+import authRepository from "../../repositories/authRepository.js";
 
-// export async function tokenValidationMid(req, res, next){
-//     const { authorization } = req.headers;
+export async function tokenValidationMid(req, res, next){
+    const { authorization } = req.headers;
 
-//     const token = authorization?.replace('Bearer ', '');
-//     if(!token) {
-//         return res.sendStatus(401);
-//     }
-//     const session = await  db.collection("sessions").findOne({token});
-//     if(!session) {
-//         return res.sendStatus(401);
-//     }
+    const token = authorization?.replace('Bearer ', '');
+    if(!token) throw {type: "unauthorized", message: "você não está logado!"}
 
-//     const user = await  db.collection("users").findOne({ _id: session.userId });
-//     if(!user){
-//         return res.sendStatus(401);
-//     }
+    const session = await authRepository.getSessionByToken(token);
+    if(!session) throw {type: "unauthorized", message: "você não está logado!"}
 
-//     delete user.password;
-//     res.locals.user = user;
-//     next();
-// }
+    const user = await authRepository.getUserById(session.userId);
+    if(!user) throw {type: "unauthorized", message: "usuário não registrado!"}
+
+    delete user.password;
+    res.locals.user = user;
+    next();
+}

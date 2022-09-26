@@ -1,8 +1,7 @@
 import db from "../database.js";
 
 async function getUserByEmail(email){
-  const user = await db.collection("users").findOne({email});
-  return user;
+  return await db.collection("users").findOne({email});
 }
 
 async function createSession(id, token){
@@ -14,9 +13,19 @@ async function insertUser(name, email, password){
   return await db.collection("users").insertOne({name, email, password});
 }
 
+async function getSessionByToken(token){
+  return await db.collection("sessions").findOne({token:token});
+}
+
+async function getUserById(id){
+  return await db.collection("users").findOne({_id:id});
+}
+
 const authRepository = {
   getUserByEmail,
   createSession,
-  insertUser
+  insertUser,
+  getSessionByToken,
+  getUserById
 }
 export default authRepository;
