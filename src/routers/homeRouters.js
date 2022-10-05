@@ -5,10 +5,13 @@ import { tokenValidationMid } from "../middlewares/validations/authmiddleware.js
 import validateSchemas from "../middlewares/validations/schemaValidation.js";
 
 const homeController = Router();
-homeController.get("/home", tokenValidationMid, getTransations);
-homeController.post("/home", tokenValidationMid, validateSchemas(transitionSchema), postTransation);
-homeController.put("/home",tokenValidationMid, logOut);
-homeController.put("/home/:id", tokenValidationMid, validateSchemas(transitionSchema), updateTransation);
-homeController.delete("/home/:id", tokenValidationMid, deleteTransation);
+
+homeController
+  .all("/*", tokenValidationMid)
+  .get("/home", getTransations)
+  .post("/home", validateSchemas(transitionSchema), postTransation)
+  .put("/home", logOut)
+  .put("/home/:id", validateSchemas(transitionSchema), updateTransation)
+  .delete("/home/:id", deleteTransation);
 
 export default homeController;

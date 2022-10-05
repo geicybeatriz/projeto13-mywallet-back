@@ -6,7 +6,8 @@ import validateSchemas from "../middlewares/validations/schemaValidation.js";
 
 const authRouter = Router();
 
-authRouter.post("/sign-in", validateSchemas(userSignInSchema), signIn);
-authRouter.post("/sign-up", validateSchemas(userSignUpSchema), signUp);
+authRouter
+  .post("/sign-in", validateSchemas(userSignInSchema), signIn)
+  .post("/sign-up", validateSchemas(userSignUpSchema), signUp);
 
 export default authRouter;
