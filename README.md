@@ -18,7 +18,7 @@
 ## :clipboard: Descrição
 
 
-My Wallet API é uma aplicação back-end, responsável por atender às requisições do app MyWallet. 
+My Wallet API é uma aplicação back-end, responsável por atender às requisições do app [MyWallet](https://github.com/geicybeatriz/projeto13-mywallet-front). 
 
 Nesta aplicação, é permitido ao usuário salvar, atualizar e deletar informações financeiras de entrada e saída.
 
