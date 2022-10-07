@@ -10,7 +10,7 @@ homeController
   .all("/*", tokenValidationMid)
   .get("/home", getTransations)
   .post("/home", validateSchemas(transitionSchema), postTransation)
-  .put("/home", logOut)
+  .put("/exit", logOut)
   .put("/home/:id", validateSchemas(transitionSchema), updateTransation)
   .delete("/home/:id", deleteTransation);
 
